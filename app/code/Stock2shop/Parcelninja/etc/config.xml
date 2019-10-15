@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <carriers>
+            <parcelninja>
+                <active>0</active>
+                <title>Parcelninja Shipping</title>
+                <name>Parcelninja Shipping</name>
+                <api_url>https://storeapi.parcelninja.com/api/v1</api_url>
+                <shipping_cost>10</shipping_cost>
+                <sallowspecific>0</sallowspecific>
+                <sort_order>15</sort_order>
+                <model>Stock2shop\Parcelninja\Model\Carrier\Parcelninja</model>
+            </parcelninja>
+        </carriers>
+    </default>
+</config>
