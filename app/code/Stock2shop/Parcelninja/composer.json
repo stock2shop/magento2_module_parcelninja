@@ -3,6 +3,7 @@
   "description": "Parcelninja shipping module",
   "require": {
     "php": "~7.1.3||~7.2.0",
+    "guzzlehttp/guzzle": "~6.0",
     "magento/framework": "102.0.*",
     "magento/module-backend": "101.0.*",
     "magento/module-catalog": "103.0.*",
