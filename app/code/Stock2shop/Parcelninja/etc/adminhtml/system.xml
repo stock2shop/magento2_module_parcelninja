@@ -20,7 +20,7 @@
                 <field id="api_username" translate="label" type="text" sortOrder="32" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API Username</label>
                 </field>
-                <field id="api_password" translate="label" type="text" sortOrder="33" showInDefault="1" showInWebsite="1" showInStore="0">
+                <field id="api_password" translate="label" type="password" sortOrder="33" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>API Password</label>
                 </field>
                 <field id="shipping_cost" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="0" >

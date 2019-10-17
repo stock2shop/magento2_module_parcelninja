@@ -141,7 +141,6 @@ class Parcelninja extends AbstractCarrier implements CarrierInterface
     /**
      * Makes POST request
      *
-     * @param $method
      * @param $resource
      * @param $payload
      */
