@@ -34,7 +34,7 @@ class Parcelninja extends AbstractCarrier implements CarrierInterface
      */
     private $rateMethodFactory;
 
-    private $scopeConfig;
+    private $_pn_carrier_title = '';
 
     protected $pn_base_url = '';
     protected $pn_api_usr = '';
@@ -74,7 +74,7 @@ class Parcelninja extends AbstractCarrier implements CarrierInterface
      */
     public function collectRates(RateRequest $request)
     {
-        if (!$this->getConfigFlag('active')) {
+        if (!$this->getConfigFlag('active') && strtolower($request->getDestCountryId()) != 'za') {
             return false;
         }
 
@@ -90,11 +90,35 @@ class Parcelninja extends AbstractCarrier implements CarrierInterface
         $method->setMethod($this->_code);
         $method->setMethodTitle($this->getConfigData('name'));
 
+        $shippingCost = $this->_getCheapestQuote($request);
+        if ($this->_pn_carrier_title) $method->setCarrierTitle($this->_pn_carrier_title);
+
+        $method->setPrice($shippingCost);
+        $method->setCost($shippingCost);
+
+        $result->append($method);
+
+        return $result;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllowedMethods()
+    {
+        return [$this->_code => $this->getConfigData('name')];
+    }
+
+    private function _getCheapestQuote($request) {
         // Create payload
         $postcode = $request->getDestPostcode();
+        $city = $request->getDestCity();
         $items = $request->getAllItems();
         $payload = array(
-            "deliveryInformation" => array("postalCode" => $postcode)
+            "deliveryInformation" => array(
+                "postalCode" => $postcode,
+                'suburb' => $city
+            )
         );
         $payload_items = array();
         foreach ($items as $item) {
@@ -118,24 +142,11 @@ class Parcelninja extends AbstractCarrier implements CarrierInterface
         } else {
             foreach ($response as $quote) {
                 $shippingCost = (float)$quote->cost;
-                $method->setCarrierTitle($quote->service->description);
+                $this->_pn_carrier_title = $quote->service->description;
             }
         }
 
-        $method->setPrice($shippingCost);
-        $method->setCost($shippingCost);
-
-        $result->append($method);
-
-        return $result;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllowedMethods()
-    {
-        return [$this->_code => $this->getConfigData('name')];
+        return $shippingCost;
     }
 
     /**
@@ -155,9 +166,9 @@ class Parcelninja extends AbstractCarrier implements CarrierInterface
                 ]
             ]);
 
-            $response = $client->request('POST', $resource, $payload);
+            $response = $client->request('POST', $resource, ['json' => $payload]);
 
-            return $response;
+            return json_decode($response->getBody());
         } catch (\Exception $e) {
             return false;
         }
