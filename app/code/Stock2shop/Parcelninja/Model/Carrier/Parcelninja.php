@@ -34,6 +34,8 @@ class Parcelninja extends AbstractCarrier implements CarrierInterface
      */
     private $rateMethodFactory;
 
+    protected $_sessionManager;
+
     private $_pn_carrier_title = '';
 
     protected $pn_base_url = '';
@@ -54,12 +56,15 @@ class Parcelninja extends AbstractCarrier implements CarrierInterface
         \Psr\Log\LoggerInterface $logger,
         \Magento\Shipping\Model\Rate\ResultFactory $rateResultFactory,
         \Magento\Quote\Model\Quote\Address\RateResult\MethodFactory $rateMethodFactory,
+        \Magento\Framework\Session\SessionManagerInterface $sessionManager,
         array $data = []
     ) {
         parent::__construct($scopeConfig, $rateErrorFactory, $logger, $data);
 
         $this->rateResultFactory = $rateResultFactory;
         $this->rateMethodFactory = $rateMethodFactory;
+
+        $this->_sessionManager = $sessionManager;
 
         $this->pn_base_url = $scopeConfig->getValue('carriers/parcelninja/api_url', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, true, false);
         $this->pn_api_usr = $scopeConfig->getValue('carriers/parcelninja/api_username', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, true, false);;
@@ -91,7 +96,9 @@ class Parcelninja extends AbstractCarrier implements CarrierInterface
         $method->setMethodTitle($this->getConfigData('name'));
 
         $shippingCost = $this->_getCheapestQuote($request);
-        if ($this->_pn_carrier_title) $method->setCarrierTitle($this->_pn_carrier_title);
+        if ($this->_pn_carrier_title) {
+            $method->setCarrierTitle($this->_pn_carrier_title);
+        }
 
         $method->setPrice($shippingCost);
         $method->setCost($shippingCost);
@@ -143,6 +150,8 @@ class Parcelninja extends AbstractCarrier implements CarrierInterface
             foreach ($response as $quote) {
                 $shippingCost = (float)$quote->cost;
                 $this->_pn_carrier_title = $quote->service->description;
+                // Temporarily store PN quote id to later save with our order
+                $this->_sessionManager->setParcelninjaQuoteId($quote->quoteId);
             }
         }
 

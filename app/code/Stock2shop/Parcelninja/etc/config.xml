@@ -4,8 +4,8 @@
         <carriers>
             <parcelninja>
                 <active>0</active>
-                <title>Parcelninja Shipping</title>
-                <name>Parcelninja Shipping</name>
+                <title>Shipping</title>
+                <name>Parcelninja</name>
                 <api_url>https://storeapi.parcelninja.com/api/v1</api_url>
                 <shipping_cost>10</shipping_cost>
                 <sallowspecific>0</sallowspecific>
