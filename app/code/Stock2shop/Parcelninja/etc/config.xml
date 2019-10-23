@@ -6,7 +6,7 @@
                 <active>0</active>
                 <title>Shipping</title>
                 <name>Parcelninja</name>
-                <api_url>https://storeapi.parcelninja.com/api/v1</api_url>
+                <api_url>https://storeapi.parcelninja.com/api/v1/</api_url>
                 <shipping_cost>10</shipping_cost>
                 <sallowspecific>0</sallowspecific>
                 <sort_order>15</sort_order>

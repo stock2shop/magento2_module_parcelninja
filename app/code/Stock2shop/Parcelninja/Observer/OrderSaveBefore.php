@@ -20,7 +20,8 @@ class OrderSaveBefore implements ObserverInterface
         $order = $observer['order'];
         $pn_quote_id = ($this->_sessionManager->getParcelninjaQuoteId()) ? "" . $this->_sessionManager->getParcelninjaQuoteId() . "" : false;
         if ($pn_quote_id && $order->getShippingMethod() == 'parcelninja_parcelninja') {
-            $order->setShippingDescription($pn_quote_id);
+            // The field being set here does not exist in the db so it is not stored along with the order, but simply added to the order payload
+            $order->getShippingAddress()->setFax($pn_quote_id);
         } elseif ($order->getShippingMethod() == 'parcelninja_parcelninja') {
             // throw exception as pn quote id is required for parcelninja shipping method
         }
